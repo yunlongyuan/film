@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.filmLocationsMapper">
+  <resultMap id="BaseResultMap" type="bean.filmLocations">
+    <result column="Release Year" jdbcType="INTEGER" property="releaseYear" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="bean.filmLocations">
+    <result column="Title" jdbcType="LONGVARCHAR" property="title" />
+    <result column="Locations" jdbcType="LONGVARCHAR" property="locations" />
+    <result column="Fun Facts" jdbcType="LONGVARCHAR" property="funFacts" />
+    <result column="Production Company" jdbcType="LONGVARCHAR" property="productionCompany" />
+    <result column="Distributor" jdbcType="LONGVARCHAR" property="distributor" />
+    <result column="Director" jdbcType="LONGVARCHAR" property="director" />
+    <result column="Writer" jdbcType="LONGVARCHAR" property="writer" />
+    <result column="Actor1" jdbcType="LONGVARCHAR" property="actor1" />
+    <result column="Actor2" jdbcType="LONGVARCHAR" property="actor2" />
+    <result column="Actor3" jdbcType="LONGVARCHAR" property="actor3" />
+  </resultMap>
+  <sql id="Blob_Column_List">
+    Title, Locations, "Fun Facts", "Production Company", Distributor, Director, Writer, 
+    Actor1, Actor2, Actor3
+  </sql>
+  <insert id="insert" parameterType="bean.filmLocations">
+    insert into film_locations ("Release Year", Title, Locations, 
+      "Fun Facts", "Production Company", Distributor, 
+      Director, Writer, Actor1, 
+      Actor2, Actor3)
+    values (#{releaseYear,jdbcType=INTEGER}, #{title,jdbcType=LONGVARCHAR}, #{locations,jdbcType=LONGVARCHAR}, 
+      #{funFacts,jdbcType=LONGVARCHAR}, #{productionCompany,jdbcType=LONGVARCHAR}, #{distributor,jdbcType=LONGVARCHAR}, 
+      #{director,jdbcType=LONGVARCHAR}, #{writer,jdbcType=LONGVARCHAR}, #{actor1,jdbcType=LONGVARCHAR}, 
+      #{actor2,jdbcType=LONGVARCHAR}, #{actor3,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="bean.filmLocations">
+    insert into film_locations
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="releaseYear != null">
+        "Release Year",
+      </if>
+      <if test="title != null">
+        Title,
+      </if>
+      <if test="locations != null">
+        Locations,
+      </if>
+      <if test="funFacts != null">
+        "Fun Facts",
+      </if>
+      <if test="productionCompany != null">
+        "Production Company",
+      </if>
+      <if test="distributor != null">
+        Distributor,
+      </if>
+      <if test="director != null">
+        Director,
+      </if>
+      <if test="writer != null">
+        Writer,
+      </if>
+      <if test="actor1 != null">
+        Actor1,
+      </if>
+      <if test="actor2 != null">
+        Actor2,
+      </if>
+      <if test="actor3 != null">
+        Actor3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="releaseYear != null">
+        #{releaseYear,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="locations != null">
+        #{locations,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="funFacts != null">
+        #{funFacts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="productionCompany != null">
+        #{productionCompany,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="distributor != null">
+        #{distributor,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="director != null">
+        #{director,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="writer != null">
+        #{writer,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="actor1 != null">
+        #{actor1,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="actor2 != null">
+        #{actor2,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="actor3 != null">
+        #{actor3,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>
