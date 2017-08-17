@@ -1,6 +1,6 @@
-package bean;
+package com.yyl.film.entity;
 
-public class filmLocations {
+public class FilmLocations {
     private Integer releaseYear;
 
     private String title;
