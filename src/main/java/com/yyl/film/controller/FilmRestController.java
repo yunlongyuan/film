@@ -15,7 +15,7 @@ import java.util.List;
  * Created by xchunzhao on 02/05/2017.
  */
 @RestController
-public class CityRestController {
+public class FilmRestController {
 
 
     @Autowired
@@ -32,5 +32,7 @@ public class CityRestController {
     public List<FilmLocations> findByName(@RequestParam(value = "name") String name){
         return filmService.selctByName(name);
     }
+
+
 
 }
