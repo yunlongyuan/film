@@ -1,19 +1,138 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-    <title>Google Maps JavaScript API Example - simple</title>
-    <script src="http://maps.google.com/maps?file=api&v=1&key=abcdefg" type="text/javascript"></script>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+    <style>
+        .ui-autocomplete {
+            max-height: 100px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+        }
+
+        /* IE 6 doesn't support max-height
+         * we use height instead, but this forces the menu to always be this tall
+         */
+        * html .ui-autocomplete {
+            height: 100px;
+        }
+    </style>
+
+
 </head>
 <body>
-<div id="map" style="width: 300px; height: 300px"></div>
-<script type="text/javascript">
-
-    if (GBrowserIsCompatible()) {
-        var map = new GMap(document.getElementById("map"));
-        map.centerAndZoom(new GPoint(-122.141944, 37.441944), 4);
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<div id="map" style="width:100%;height:500px"></div>
+<script>
+    var map;
+    var lat = 37.7950319;
+    var lng = -122.3950407;
+    var marker;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: lat, lng: lng},
+            zoom: 10
+        });
+        marker = new google.maps.Marker({
+            map: map,
+            position: new google.maps.LatLng(lat, lng)
+        });
     }
+    /*var mapType = google.maps.MapTypeId.ROADMAP;
+     var lat = 37.7950319, lng = 122.3950407, zoom = 10;
+     var mapOptions = {
+     center: new google.maps.LatLng(lat, lng),  //地图的中心点
+     zoom: zoom,               　　　　　　　　　　//地图缩放比例
+     mapTypeId: mapType,       　　　　　　　　　　//指定地图展示类型：卫星图像、普通道路
+     scrollwheel: true          　　　　　　　　　 //是否允许滚轮滑动进行缩放
+     };
+     var map = new google.maps.Map(document.getElementById("map"), mapOptions); //创建谷歌地图*/
+
 
 </script>
-</body>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEwW2Z0pkkGXm8hmjQR9TZXPlUd_XuxeU&callback=initMap"></script>
 
+<script>
+    $(document).ready(function () {
+        var dataArray=[];
+        var jsonString=""
+
+        $("#film_name").on("keypress",function(event){
+            var value = $("#film_name").val();
+            if(value.length >0){
+                //dataArray=[];
+                $.ajax({
+                    url: "/api/getFilmByName?name="+value,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data){
+                        jsonString="";
+                        if(data.length>0){
+                            for(var i = 0 ; i<data.length;i++){
+                                if(data.length==1){
+                                    jsonString+="[{"+"\"label\":"+"\""+data[i].title+"\""+",\"value\":"+"\""+data[i].title+"\""+",\"address\":"+"\""+data[i].locations+"\""+"}]"
+                                }else{
+                                    if(i==0){
+                                        jsonString+="[{"+"\"label\":"+"\""+data[i].title+"\""+",\"value\":"+"\""+data[i].title+"\""+",\"address\":"+"\""+data[i].locations+"\""+"},"
+                                    }else if(i>0 && i<data.length-1){
+                                        jsonString+="{"+"\"label\":"+"\""+data[i].title+"\""+",\"value\":"+"\""+data[i].title+"\""+",\"address\":"+"\""+data[i].locations+"\""+"},"
+                                    }else if(i > 0 && i==data.length-1){
+                                        jsonString+="{"+"\"label\":"+"\""+data[i].title+"\""+",\"value\":"+"\""+data[i].title+"\""+",\"address\":"+"\""+data[i].locations+"\""+"}]"
+                                    }
+                                }
+                            }
+                            dataArray=JSON.parse(jsonString);
+                        }
+                    }
+                });
+            }
+            $("#film_name").autocomplete({
+                source: dataArray,
+                select:function(event, ui){
+                    $("#address").val(ui.item.address);
+                    $.ajax({
+                        url: "https://maps.googleapis.com/maps/api/geocode/json?address="+ui.item.address+"&key=AIzaSyBEwW2Z0pkkGXm8hmjQR9TZXPlUd_XuxeU",
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data){
+                            for(var k=0; k<data.results.length;k++){
+                                lat=data.results[k].geometry.location.lat;
+                                lng=data.results[k].geometry.location.lng
+                                initMap()
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+
+    });
+
+</script>
+<div class="ui-widget">
+    <label for="film_name">Film Name: </label>
+    <input id="film_name">
+    <input id="address" type="hidden">
+</div>
+</body>
 </html>

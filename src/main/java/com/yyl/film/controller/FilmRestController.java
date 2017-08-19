@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,11 @@ public class FilmRestController {
 
     @RequestMapping(value = "/api/getFilmByName", method = RequestMethod.GET)
     public List<FilmLocations> findByName(@RequestParam(value = "name") String name){
-        return filmService.selctByName(name);
+        if( name !=null && !"".equals(name)){
+            return filmService.selctByName(name);
+        }else{
+            return new ArrayList<FilmLocations>();
+        }
     }
 
 

@@ -25,7 +25,7 @@ public interface FilmLocationsMapper {
     })
     List<FilmLocations> selectAll();
 
-    @Select("SELECT * FROM film_locations where title=#{title}")
+    @Select("SELECT * FROM film_locations where lower(title) like lower('${title}%')")
     @Results({
             @Result(property = "title",  column = "Title"),
             @Result(property = "releaseYear", column = "ReleaseYear"),
